@@ -1,4 +1,4 @@
-FROM nvidia/cuda:11.8.0-cudnn8-devel-ubuntu20.04
+FROM docker.1ms.run/nvidia/cuda:11.8.0-cudnn8-devel-ubuntu20.04
 
 ARG DEBIAN_FRONTEND=noninteractive
 ENV CUDA_HOME /usr/local/cuda-11.8/
@@ -12,7 +12,7 @@ RUN apt-get update && apt-get install -y software-properties-common wget && \
     update-alternatives --set python3 /usr/bin/python3.10 && \
     apt-get install -y zlib1g-dev libexpat1-dev
 
-RUN wget https://github.com/Kitware/CMake/releases/download/v3.26.4/cmake-3.26.4-linux-x86_64.sh && \
+RUN wget https://xget.xi-xu.me/gh/Kitware/CMake/releases/download/v3.26.4/cmake-3.26.4-linux-x86_64.sh && \
     chmod +x cmake-3.26.4-linux-x86_64.sh && \
     ./cmake-3.26.4-linux-x86_64.sh --skip-license --prefix=/usr/local && \
     rm cmake-3.26.4-linux-x86_64.sh
@@ -31,12 +31,16 @@ RUN apt-get install --no-install-recommends wget ffmpeg=7:* \
     libsm6=2:* libxext6=2:* git=1:* vim=2:* -y \
     && apt-get clean && apt-get autoremove && rm -rf /var/lib/apt/lists/*
 
-RUN wget https://github.com/mikefarah/yq/releases/download/v4.30.8/yq_linux_amd64 -O /usr/bin/yq \
+RUN wget https://xget.xi-xu.me/gh/mikefarah/yq/releases/download/v4.30.8/yq_linux_amd64 -O /usr/bin/yq \
     && chmod +x /usr/bin/yq
 
-RUN pip install git+https://github.com/apple/ml-depth-pro.git
-RUN pip install 'git+https://github.com/facebookresearch/sam2.git'
-RUN pip install git+https://github.com/openai/CLIP.git
+# 替换为国内镜像
+RUN pip install -i https://pypi.tuna.tsinghua.edu.cn/simple/ git+https://github.com/apple/ml-depth-pro.git
+# 使用清华镜像
+RUN pip install -i https://pypi.tuna.tsinghua.edu.cn/simple/ git+https://github.com/facebookresearch/sam2.git
+
+# 替换为国内镜像
+RUN pip install -i https://pypi.tuna.tsinghua.edu.cn/simple/ git+https://github.com/openai/CLIP.git
 
 RUN pip install --upgrade torch==2.4.0+cu118 torchvision==0.19.0 torchaudio==2.4.0 --index-url https://download.pytorch.org/whl/cu118
 
