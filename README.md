@@ -6,6 +6,32 @@ bash run.sh
 ```
 
 ## 0. 环境配置
+
+由于国内网络的问题，在官方直接提供的镜像构建时会遇到很多问题，因此需要进行一些额外的配置和准备工作。
+
+利用著名的开源镜像源，可以通过以下命令进行配置：
+
+```bash
+pip config set global.index-url https://xget.xi-xu.me/pypi/simple/
+```
+```bash
+pip config set global.trusted-host xget.xi-xu.me
+```
+```bash
+pip install uv
+```
+
+但是在构建时会发现，xget有请求次数限制，dockerfile中有过多的xget镜像网址，会导致构建失败。
+
+我选择将部分xget的镜像源替换为清华大学的镜像源，清华大学的镜像源同样可以满足大部分需求。
+
+但是配置完xget后，若要做推送到GitHub，xget的配置可能会导致验证和链接问题，因此需要进行相应的调整如下：
+
+```bash
+git config --global --unset url.https://xget.xi-xu.me/gh/.insteadof
+```
+推送完后通过上面的命令将xget的配置重新设置为原来的状态即可。
+
 笔者已经修改了针对怀柔服务器的国内镜像源，使docker在构建的时候能够顺利构建。
 
 详情见VQASynth/docker/base_image/Dockerfile
