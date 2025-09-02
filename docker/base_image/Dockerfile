@@ -50,10 +50,13 @@ RUN git clone https://github.com/facebookresearch/vggt.git && cd vggt && pip ins
 
 WORKDIR /app/VQASynth
 COPY . /app/VQASynth
-RUN pip install .
+# 使用清华镜像源安装
+RUN pip install -i https://pypi.tuna.tsinghua.edu.cn/simple/ .
 
-RUN pip uninstall -y flash_attn
-RUN pip install git+https://github.com/Dao-AILab/flash-attention.git@v2.6.0
+COPY flash_attn-2.6.0+cu118torch2.4cxx11abiFALSE-cp310-cp310-linux_x86_64.whl ./
+RUN pip uninstall -y flash_attn || true && \
+    pip install --no-cache-dir flash_attn-2.6.0+cu118torch2.4cxx11abiFALSE-cp310-cp310-linux_x86_64.whl && \
+    rm flash_attn-2.6.0+cu118torch2.4cxx11abiFALSE-cp310-cp310-linux_x86_64.whl
 
 WORKDIR /app
 

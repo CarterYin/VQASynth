@@ -7,14 +7,22 @@ services:
       dockerfile: docker/embeddings_stage/Dockerfile
     volumes:
       - ${OUTPUT_DIR}:${OUTPUT_DIR}
+      - /home/yinchao/hf_cache:/root/.cache/huggingface
     environment:
-      NVIDIA_VISIBLE_DEVICES: all
+      NVIDIA_VISIBLE_DEVICES: 0
       HF_TOKEN: ${HF_TOKEN}
+      HF_ENDPOINT: ${HF_ENDPOINT}
+      HF_HUB_URL: ${HF_HUB_URL}
+      HF_DATASETS_CACHE: /root/.cache/huggingface
+      HF_HUB_DOWNLOAD_TIMEOUT: ${HF_HUB_DOWNLOAD_TIMEOUT}
+      HF_HUB_DOWNLOAD_RETRY: ${HF_HUB_DOWNLOAD_RETRY}
+      HF_HUB_DOWNLOAD_CHUNK_SIZE: ${HF_HUB_DOWNLOAD_CHUNK_SIZE}
     deploy:
       resources:
         reservations:
           devices:
           - capabilities: ["gpu"]
+            count: 1
 
   filter_stage:
     build:
@@ -22,16 +30,24 @@ services:
       dockerfile: docker/filter_stage/Dockerfile
     volumes:
       - ${OUTPUT_DIR}:${OUTPUT_DIR}
+      - /home/yinchao/hf_cache:/root/.cache/huggingface
     depends_on:
       - embeddings_stage
     environment:
-      NVIDIA_VISIBLE_DEVICES: all
+      NVIDIA_VISIBLE_DEVICES: 1
       HF_TOKEN: ${HF_TOKEN}
+      HF_ENDPOINT: ${HF_ENDPOINT}
+      HF_HUB_URL: ${HF_HUB_URL}
+      HF_DATASETS_CACHE: /root/.cache/huggingface
+      HF_HUB_DOWNLOAD_TIMEOUT: ${HF_HUB_DOWNLOAD_TIMEOUT}
+      HF_HUB_DOWNLOAD_RETRY: ${HF_HUB_DOWNLOAD_RETRY}
+      HF_HUB_DOWNLOAD_CHUNK_SIZE: ${HF_HUB_DOWNLOAD_CHUNK_SIZE}
     deploy:
       resources:
         reservations:
           devices:
           - capabilities: ["gpu"]
+            count: 1
 
   location_refinement_stage:
     build:
@@ -39,16 +55,24 @@ services:
       dockerfile: docker/location_refinement_stage/Dockerfile
     volumes:
       - ${OUTPUT_DIR}:${OUTPUT_DIR}
+      - /home/yinchao/hf_cache:/root/.cache/huggingface
     depends_on:
       - filter_stage
     environment:
-      NVIDIA_VISIBLE_DEVICES: all
+      NVIDIA_VISIBLE_DEVICES: 2
       HF_TOKEN: ${HF_TOKEN}
+      HF_ENDPOINT: ${HF_ENDPOINT}
+      HF_HUB_URL: ${HF_HUB_URL}
+      HF_DATASETS_CACHE: /root/.cache/huggingface
+      HF_HUB_DOWNLOAD_TIMEOUT: ${HF_HUB_DOWNLOAD_TIMEOUT}
+      HF_HUB_DOWNLOAD_RETRY: ${HF_HUB_DOWNLOAD_RETRY}
+      HF_HUB_DOWNLOAD_CHUNK_SIZE: ${HF_HUB_DOWNLOAD_CHUNK_SIZE}
     deploy:
       resources:
         reservations:
           devices:
           - capabilities: ["gpu"]
+            count: 1
 
   scene_fusion_stage:
     build:
@@ -56,16 +80,24 @@ services:
       dockerfile: docker/scene_fusion_stage/Dockerfile
     volumes:
       - ${OUTPUT_DIR}:${OUTPUT_DIR}
+      - /home/yinchao/hf_cache:/root/.cache/huggingface
     depends_on:
       - location_refinement_stage
     environment:
-      NVIDIA_VISIBLE_DEVICES: all
+      NVIDIA_VISIBLE_DEVICES: 3
       HF_TOKEN: ${HF_TOKEN}
+      HF_ENDPOINT: ${HF_ENDPOINT}
+      HF_HUB_URL: ${HF_HUB_URL}
+      HF_DATASETS_CACHE: /root/.cache/huggingface
+      HF_HUB_DOWNLOAD_TIMEOUT: ${HF_HUB_DOWNLOAD_TIMEOUT}
+      HF_HUB_DOWNLOAD_RETRY: ${HF_HUB_DOWNLOAD_RETRY}
+      HF_HUB_DOWNLOAD_CHUNK_SIZE: ${HF_HUB_DOWNLOAD_CHUNK_SIZE}
     deploy:
       resources:
         reservations:
           devices:
           - capabilities: ["gpu"]
+            count: 1
 
   prompt_stage:
     build:
@@ -73,13 +105,21 @@ services:
       dockerfile: docker/prompt_stage/Dockerfile
     volumes:
       - ${OUTPUT_DIR}:${OUTPUT_DIR}
+      - /home/yinchao/hf_cache:/root/.cache/huggingface
     depends_on:
       - scene_fusion_stage
     environment:
-      NVIDIA_VISIBLE_DEVICES: all
+      NVIDIA_VISIBLE_DEVICES: 4
       HF_TOKEN: ${HF_TOKEN}
+      HF_ENDPOINT: ${HF_ENDPOINT}
+      HF_HUB_URL: ${HF_HUB_URL}
+      HF_DATASETS_CACHE: /root/.cache/huggingface
+      HF_HUB_DOWNLOAD_TIMEOUT: ${HF_HUB_DOWNLOAD_TIMEOUT}
+      HF_HUB_DOWNLOAD_RETRY: ${HF_HUB_DOWNLOAD_RETRY}
+      HF_HUB_DOWNLOAD_CHUNK_SIZE: ${HF_HUB_DOWNLOAD_CHUNK_SIZE}
     deploy:
       resources:
         reservations:
           devices:
           - capabilities: ["gpu"]
+            count: 1
